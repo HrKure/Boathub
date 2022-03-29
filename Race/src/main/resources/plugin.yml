@@ -1,0 +1,7 @@
+name: Race
+version: '${project.version}'
+main: racing.boathub.race.Race
+api-version: 1.18
+prefix: Race
+authors: [ Kevin996, Renokas1 ]
+description: Racing plugin for boathub
