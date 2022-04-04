@@ -86,6 +86,7 @@ public final class Trails extends JavaPlugin {
             }
 
         }
+        DB.close();
     }
     public static Trails getInstance() {
         return Trails.instance;
@@ -97,11 +98,11 @@ public final class Trails extends JavaPlugin {
                 UUID id = p.getUniqueId();
                 Trail trail = trails.get(selectedtrail.get(id));
                 if(trail.type.equalsIgnoreCase("REDSTONE")) {
-                    new ParticleBuilder(trail.getParticle()).color(trail.getColor()).source(p).spawn();
+                    new ParticleBuilder(trail.getParticle()).color(trail.getColor()).source(p).location(p.getLocation()).spawn();
                     System.out.println("Redstone trail cool");
                 }
                 else {
-                    new ParticleBuilder(trail.getParticle()).source(p).spawn();
+                    new ParticleBuilder(trail.getParticle()).source(p).location(p.getLocation()).spawn();
                     System.out.println("Normal trail cool");
                 }
             }
