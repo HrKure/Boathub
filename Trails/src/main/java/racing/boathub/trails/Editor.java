@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class Editor {
     String type = null;
-    Color color = null;
+    Color color = Color.WHITE;
     String name;
     Trails plugin = Trails.getInstance();
     public Editor(String name) {

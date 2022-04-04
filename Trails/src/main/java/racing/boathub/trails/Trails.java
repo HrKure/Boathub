@@ -96,8 +96,14 @@ public final class Trails extends JavaPlugin {
             for(Player p : boaters) {
                 UUID id = p.getUniqueId();
                 Trail trail = trails.get(selectedtrail.get(id));
-                new ParticleBuilder(trail.getParticle()).color(trail.getColor()).source(p).spawn();
-                System.out.println("Trail cool");
+                if(trail.type.equalsIgnoreCase("REDSTONE")) {
+                    new ParticleBuilder(trail.getParticle()).color(trail.getColor()).source(p).spawn();
+                    System.out.println("Redstone trail cool");
+                }
+                else {
+                    new ParticleBuilder(trail.getParticle()).source(p).spawn();
+                    System.out.println("Normal trail cool");
+                }
             }
         }, 1L /*<-- the initial delay */, 1L /*<-- the interval */);
     }
