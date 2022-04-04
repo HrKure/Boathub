@@ -74,13 +74,14 @@ public final class Trails extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // salvestan playerite valikud, Kuigi see sitt ei toimi
         for(UUID id : selectedtrail.keySet()) {
 //            Trail trail = trails.get(s);
 //            String type = trail.getType();
 //            Boolean colored = trail.getColored();
 //            String colors = trail.getRed() + ":" + trail.getGreen() + ":" + trail.getBlue();
             try {
-                DB.executeUpdate("INSERT INTO PlayerTrails (UUID, NAME) VALUES (?, ?);", id, selectedtrail.get(id));
+                DB.executeUpdate("INSERT INTO PlayerTrails (UUID, NAME) VALUES (?, ?);", id.toString(), selectedtrail.get(id));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -88,6 +89,8 @@ public final class Trails extends JavaPlugin {
         }
         DB.close();
     }
+
+    //See sitt mis spawnib particle
     public static Trails getInstance() {
         return Trails.instance;
     }
@@ -97,13 +100,14 @@ public final class Trails extends JavaPlugin {
             for(Player p : boaters) {
                 UUID id = p.getUniqueId();
                 Trail trail = trails.get(selectedtrail.get(id));
-                if(trail.type.equalsIgnoreCase("REDSTONE")) {
-                    new ParticleBuilder(trail.getParticle()).color(trail.getColor()).source(p).location(p.getLocation()).spawn();
-                    System.out.println("Redstone trail cool");
-                }
-                else {
-                    new ParticleBuilder(trail.getParticle()).source(p).location(p.getLocation()).spawn();
-                    System.out.println("Normal trail cool");
+                if(trail != null) {
+                    if (trail.type.equalsIgnoreCase("REDSTONE")) {
+                        new ParticleBuilder(trail.getParticle()).color(trail.getColor()).source(p).location(p.getLocation()).spawn();
+                        System.out.println("Redstone trail cool");
+                    } else {
+                        new ParticleBuilder(trail.getParticle()).source(p).location(p.getLocation()).spawn();
+                        System.out.println("Normal trail cool");
+                    }
                 }
             }
         }, 1L /*<-- the initial delay */, 1L /*<-- the interval */);
