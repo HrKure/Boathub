@@ -20,5 +20,5 @@ public class BoatList implements Listener {
             plugin.boaters.remove((Player) e.getExited());
         }
     }
-
+//wow this is soo clever my dude noowayyy
 }
