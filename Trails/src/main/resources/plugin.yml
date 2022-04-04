@@ -1,0 +1,11 @@
+name: Trails
+version: '${project.version}'
+main: racing.boathub.trails.Trails
+api-version: 1.18
+authors: [ Kevin996 ]
+description: Particle trails
+website: boathub.racing
+commands:
+  trail:
+    description: "Cool"
+    permission: trail.cool
