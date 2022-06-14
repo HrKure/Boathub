@@ -81,7 +81,7 @@ public final class Trails extends JavaPlugin {
 //            Boolean colored = trail.getColored();
 //            String colors = trail.getRed() + ":" + trail.getGreen() + ":" + trail.getBlue();
             try {
-                DB.executeUpdate("INSERT INTO PlayerTrails (UUID, NAME) VALUES (?, ?);", id.toString(), selectedtrail.get(id));
+                DB.executeUpdate("UPDATE PlayerTrails SET (NAME) VALUES (?) WHERE UUID='?';", selectedtrail.get(id), id.toString());
             } catch (SQLException e) {
                 e.printStackTrace();
             }

@@ -21,10 +21,11 @@ public class Racer extends Player{
     public Long getStartTime() {
         return this.startTime;
     }
-
+    //sets the racers race to the race id pog
     public void setRace(UUID id) {
         this.race = id;
     }
+    //get race id
     public UUID getRace() {
         return this.race;
     }
