@@ -9,6 +9,7 @@ public class Player {
     States state;
     Gamemodes gamemode;
 
+
     public Player(UUID id, HashMap<String, String> data) {
         this.UUID = id;
         this.data = data;

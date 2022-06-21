@@ -8,15 +8,16 @@ import java.util.List;
 import java.util.UUID;
 
 public final class Main extends JavaPlugin {
+    public static WorldManager wManager;
     public HashMap<UUID, TimeTrial> timeTrials = new HashMap<>();
     public HashMap<UUID, Race> Races = new HashMap<>();
-    public List<Track> tracks = new ArrayList<>();
+    public HashMap<String, Track> tracks = new HashMap<>();
     private static Main instance;
     @Override
     public void onEnable() {
         // Plugin startup logic
         Main.instance = this;
-
+        Main.wManager = new WorldManager();
     }
 
     @Override
@@ -25,5 +26,8 @@ public final class Main extends JavaPlugin {
     }
     public static Main getInstance() {
         return Main.instance;
+    }
+    public static WorldManager getWmanager() {
+        return Main.wManager;
     }
 }
