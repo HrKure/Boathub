@@ -17,7 +17,7 @@ public class WorldManager {
         Splugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
 
     }
-    public void loadTemplate(String templateName, int number) {
+    public void loadTemplate(String templateName, int number, Track track) {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             SlimeWorld slimeWorld = null;
             try {
@@ -27,7 +27,12 @@ public class WorldManager {
             }
             if(slimeWorld != null) {
                 SlimeWorld finalSlimeWorld = slimeWorld;
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> Splugin.generateWorld(finalSlimeWorld));
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                    Splugin.generateWorld(finalSlimeWorld);
+                    track.addWorld(new SWorld(finalSlimeWorld));
+
+
+                });
             }
         });
     }
@@ -50,19 +55,16 @@ public class WorldManager {
             }
             if(slimeWorld != null) {
                 SlimeWorld finalSlimeWorld = slimeWorld;
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> Splugin.generateWorld(finalSlimeWorld));
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                    Splugin.generateWorld(finalSlimeWorld);
+                    track.addWorld(new SWorld(finalSlimeWorld));
+
+
+                });
             }
         });
     }
-    public void unloadWorld(String wName) {
-        World bWorld = Bukkit.getWorld(wName);
-        Bukkit.unloadWorld(wName, true);
-        SlimeWorld world = Splugin.getWorld(wName);
-        SlimeLoader loader = world.getLoader();
-        assert bWorld != null;
-        unlockWorldFinally(bWorld, loader);
-    }
-    public void createWorld(String wName, Player p) {
+    public void createWorld(String wName, Player p, Editor editor) {
         SlimePropertyMap properties = new SlimePropertyMap();
         properties.setValue(SlimeProperties.DIFFICULTY, "normal");
         properties.setValue(SlimeProperties.SPAWN_X, 0);
@@ -81,6 +83,7 @@ public class WorldManager {
             }
             if(slimeWorld != null) {
                 SlimeWorld finalSlimeWorld = slimeWorld;
+                editor.setWorld(new SWorld(finalSlimeWorld));
                 Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                     Splugin.generateWorld(finalSlimeWorld);
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
@@ -95,7 +98,7 @@ public class WorldManager {
         });
 
     }
-    public void loadETrack(Track track, Player p) {
+    public void loadSave(Integer slot, Player p, Editor editor) {
         SlimePropertyMap properties = new SlimePropertyMap();
         properties.setValue(SlimeProperties.DIFFICULTY, "normal");
         properties.setValue(SlimeProperties.SPAWN_X, 0);
@@ -108,12 +111,13 @@ public class WorldManager {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             SlimeWorld slimeWorld = null;
             try {
-                slimeWorld = Splugin.loadWorld(Splugin.getLoader("mysql"), track.getId(), false, properties);
+                slimeWorld = Splugin.loadWorld(Splugin.getLoader("mysql"), p.getName() + slot, false, properties);
             } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException | WorldInUseException e) {
                 e.printStackTrace();
             }
             if(slimeWorld != null) {
                 SlimeWorld finalSlimeWorld = slimeWorld;
+                editor.setWorld(new SWorld(finalSlimeWorld));
                 Bukkit.getScheduler().runTask(Main.getInstance(), () -> {Splugin.generateWorld(finalSlimeWorld);
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                         World world = Bukkit.getWorld(finalSlimeWorld.getName());
@@ -124,23 +128,6 @@ public class WorldManager {
                 });
             }
         });
-    }
-    private void unlockWorldFinally(World world, SlimeLoader loader) {
-        String worldName = world.getName();
-
-        System.out.println("Attempting to unlock world.. " + worldName + ".");
-        try {
-            if (loader != null && loader.isWorldLocked(worldName)) {
-                System.out.println("World.. " + worldName + " is locked.");
-                loader.unlockWorld(worldName);
-                System.out.println("Attempted to unlock world.. " + worldName + ".");
-            } else {
-                System.out.println(worldName + " was not unlocked. This could be because the world is either unlocked or not in the config. This is not an error");
-            }
-        } catch (UnknownWorldException | IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(ChatColor.GREEN + "World " + ChatColor.YELLOW + worldName + ChatColor.GREEN + " unloaded correctly.");
     }
 
 
