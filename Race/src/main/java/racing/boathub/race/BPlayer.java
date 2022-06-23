@@ -1,17 +1,21 @@
 package racing.boathub.race;
 
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Player {
+public class BPlayer {
     UUID UUID;
     HashMap<String, String> data;
     States state;
     Gamemodes gamemode;
+    org.bukkit.entity.Player p;
 
 
-    public Player(UUID id, HashMap<String, String> data) {
+    public BPlayer(UUID id, HashMap<String, String> data, Player p) {
         this.UUID = id;
+        this.p = p;
         this.data = data;
         this.state = States.IDLE;
 

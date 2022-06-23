@@ -16,4 +16,17 @@ public class Region {
         Vector pLoc = p.getLocation().toVector();
         return pLoc.isInAABB(minp, maxp);
     }
+    public String getMinMax() {
+        return minp.getBlockX() +
+                "," +
+                minp.getBlockY() +
+                "," +
+                minp.getBlockZ() +
+                ":" +
+                maxp.getBlockX() +
+                "," +
+                maxp.getBlockY() +
+                "," +
+                maxp.getBlockZ();
+    }
 }

@@ -1,9 +1,12 @@
 package racing.boathub.race;
 
 import co.aikar.idb.*;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,5 +55,49 @@ public final class Main extends JavaPlugin {
     }
     public static WorldManager getWmanager() {
         return Main.wManager;
+    }
+    public void addNewTrack(String id, String label, Region start, Region end, Region pitstop, List<Region> checkpoints, String creators) {
+        List<Region> fregions = new ArrayList<>();
+        fregions.add(start);
+        fregions.addAll(checkpoints);
+        fregions.add(end);
+        this.tracks.put(id, new Track(id, label, fregions));
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            try {
+                DB.executeUpdate("INSERT INTO Tracks (ID, LABEL, START, END, PITSTOP, CHECKPOINTS, CREATORS) VALUES (?, ?, ?, ?, ?, ?, ?);", id, label, start.getMinMax(), end.getMinMax(), pitstop.getMinMax(), cpsToString(checkpoints), creators);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    public String cpsToString(List<Region> regions) {
+        StringBuilder cps = new StringBuilder();
+        for(Region r : regions) {
+            cps.append(r.getMinMax());
+            cps.append(";");
+        }
+        cps.deleteCharAt(cps.length() - 1);
+        return cps.toString();
+    }
+    public List<Region> stringToCpsRegions(String cps) {
+        String[] cps2 = cps.split(";");
+        List<Region> regions = new ArrayList<>();
+        for(String checkpoint : cps2) {
+            regions.add(minMaxToRegion(checkpoint, RegionType.CP));
+        }
+        return regions;
+    }
+    public Region minMaxToRegion(String minmax1, RegionType rt) {
+        String[] minmax = minmax1.split(":");
+        String mins = minmax[0];
+        String maxs = minmax[1];
+        String[] minp = mins.split(",");
+        String[] maxp = maxs.split(",");
+        Vector min = new Vector(Integer.parseInt(minp[0]), Integer.parseInt(minp[1]), Integer.parseInt(minp[2]));
+        Vector max = new Vector(Integer.parseInt(maxp[0]), Integer.parseInt(maxp[1]), Integer.parseInt(maxp[2]));
+        return new Region(min, max, rt);
+    }
+    public void loadTracks() {
+
     }
 }

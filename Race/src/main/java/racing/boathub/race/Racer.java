@@ -1,15 +1,17 @@
 package racing.boathub.race;
 
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Racer extends Player{
+public class Racer extends BPlayer{
     Long startTime;
 
 
     UUID race;
-    public Racer(UUID id, HashMap<String, String> data) {
-        super(id, data);
+    public Racer(UUID id, HashMap<String, String> data, Player p) {
+        super(id, data, p);
 
         this.race = null;
     }
