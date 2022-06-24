@@ -17,8 +17,10 @@ public final class Main extends JavaPlugin {
     public FileConfiguration config = getConfig();
     public static WorldManager wManager;
     public HashMap<UUID, TimeTrial> timeTrials = new HashMap<>();
-    public HashMap<UUID, Race> Races = new HashMap<>();
+    public HashMap<UUID, Race> races = new HashMap<>();
     public HashMap<String, Track> tracks = new HashMap<>();
+    public HashMap<UUID, BPlayer> players = new HashMap<>();
+    public HashMap<BPlayer, Editor> editors = new HashMap<>();
     private static Main instance;
     @Override
     public void onEnable() {
@@ -163,5 +165,8 @@ public final class Main extends JavaPlugin {
     public Vector stringToVector(String s) {
                 String[] xyz = s.split(",");
                 return new Vector(Integer.parseInt(xyz[0]), Integer.parseInt(xyz[1]), Integer.parseInt(xyz[2]));
+    }
+    public Region selectionToRegion(Vector a, Vector b, RegionType rt) {
+        return new Region(Vector.getMinimum(a, b), Vector.getMaximum(a, b), rt);
     }
 }

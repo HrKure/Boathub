@@ -1,6 +1,6 @@
 name: Race
 version: '${project.version}'
-main: racing.boathub.race.Race
+main: racing.boathub.race.Main
 api-version: 1.18
 prefix: Race
 authors: [ Kevin996, Renokas1 ]

@@ -43,20 +43,26 @@ public class Editor extends Gamemode {
     public void setWorld(SWorld world) {
         this.editWorld = world;
     }
-    public void addCheckpoint(Region region) {
-        this.checkpoints.add(region);
+    public void addCheckpoint() {
+        this.checkpoints.add(plugin.selectionToRegion(selection1, selection2, RegionType.CP));
     }
-    public void removeCheckpoint(Region region) {
-        this.checkpoints.remove(region);
+    public void removeCheckpoint() {
+        this.checkpoints.remove(this.checkpoints.get(this.checkpoints.size() - 1));
     }
-    public void setStart(Region region) {
-        this.start = region;
+    public void setStart() {
+        this.start = plugin.selectionToRegion(selection1, selection2, RegionType.START);
     }
-    public void setEnd(Region region) {
-        this.end = region;
+    public void setEnd() {
+        this.end = plugin.selectionToRegion(selection1, selection2, RegionType.FINISH);
     }
-    public void setPitstop(Region region) {
-        this.pitstop = region;
+    public void setPitstop() {
+        this.pitstop = plugin.selectionToRegion(selection1, selection2, RegionType.PITSTOP);
+    }
+    public void setSelection1(Vector v) {
+        selection1 = v;
+    }
+    public void setSelection2(Vector v) {
+        selection2 = v;
     }
     public void setRespawn(Vector v) {
         this.respawn = v;
