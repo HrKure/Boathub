@@ -1,15 +1,32 @@
 package racing.boathub.race;
 
+import org.bukkit.util.Vector;
+
 import java.util.List;
+
 
 public class Track extends Map{
     Main plugin;
     WorldManager wManager;
-    List<Region> regions;
+    List<Region> cps;
     List<SWorld> worlds;
-    public Track(String id, String label, List<Region> regions) {
+    List<Vector> spawns;
+    Vector respawn;
+    int yaw;
+    Region start;
+    Region end;
+    Region pitstop;
+    String creators;
+    public Track(String id, String label, List<Region> cps, Region start, Region end, Region pitstop, String creators, int yaw, List<Vector> spawns, Vector respawn) {
         super(id, label);
-        this.regions = regions;
+        this.cps = cps;
+        this.start = start;
+        this.end = end;
+        this.pitstop = pitstop;
+        this.creators = creators;
+        this.yaw = yaw;
+        this.spawns = spawns;
+        this.respawn = respawn;
         plugin = Main.getInstance();
         wManager = Main.getWmanager();
     }

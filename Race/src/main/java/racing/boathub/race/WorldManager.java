@@ -10,6 +10,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.util.List;
 
 public class WorldManager {
     SlimePlugin Splugin;
@@ -26,6 +27,25 @@ public class WorldManager {
                 e.printStackTrace();
             }
             if(slimeWorld != null) {
+                SlimeWorld finalSlimeWorld = slimeWorld;
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                    Splugin.generateWorld(finalSlimeWorld);
+                    track.addWorld(new SWorld(finalSlimeWorld));
+
+
+                });
+            }
+        });
+    }
+    public void createCopy(String worldName, String newName, Track track) {
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            SlimeWorld slimeWorld = null;
+            try {
+                slimeWorld = Splugin.loadWorld(Splugin.getLoader("mysql"), worldName, true, Splugin.getWorld(worldName).getPropertyMap()).clone(newName, Splugin.getLoader("mysql"));
+            } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException | WorldInUseException | WorldAlreadyExistsException e) {
+                e.printStackTrace();
+            }
+            if(slimeWorld != null) { //Temporaray loading
                 SlimeWorld finalSlimeWorld = slimeWorld;
                 Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                     Splugin.generateWorld(finalSlimeWorld);
