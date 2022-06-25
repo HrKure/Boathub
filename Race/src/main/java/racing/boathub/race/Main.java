@@ -7,10 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public final class Main extends JavaPlugin {
     public static String table;
@@ -70,10 +67,17 @@ public final class Main extends JavaPlugin {
         }
         //Load data from db :)
         loadTracks();
+        //Register Events
+        getServer().getPluginManager().registerEvents(new EditorListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        //Register Commands
+        Objects.requireNonNull(getServer().getPluginCommand("editor")).setExecutor(new editorCmd());
+        Objects.requireNonNull(getServer().getPluginCommand("edebug")).setExecutor(new debugCmd());
     }
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        DB.close();
     }
     public static Main getInstance() {
         return Main.instance;
@@ -87,7 +91,7 @@ public final class Main extends JavaPlugin {
         this.tracks.put(id, new Track(id, label, checkpoints, start, end, pitstop, creators, yaw, spawns, respawn));
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             try {
-                DB.executeUpdate("INSERT INTO Tracks (ID, LABEL, START, END, PITSTOP, CHECKPOINTS, CREATORS, SPAWNS, YAW, RESPAWN) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", id, label, start.getMinMax(), end.getMinMax(), pitstop.getMinMax(), cpsToString(checkpoints), creators, spawnsToString(spawns), yaw, respawn);
+                DB.executeUpdate("INSERT INTO Tracks (ID, LABEL, START, END, PITSTOP, CHECKPOINTS, CREATORS, SPAWNS, YAW, RESPAWN) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", id, label, start.getMinMax(), end.getMinMax(), pitstop.getMinMax(), cpsToString(checkpoints), creators, spawnsToString(spawns), yaw, vectorToString(respawn));
             } catch (SQLException e) {
                 e.printStackTrace();
             }

@@ -2,6 +2,7 @@ package racing.boathub.race;
 
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -9,7 +10,7 @@ public class Track extends Map{
     Main plugin;
     WorldManager wManager;
     List<Region> cps;
-    List<SWorld> worlds;
+    List<SWorld> worlds = new ArrayList<>();
     List<Vector> spawns;
     Vector respawn;
     int yaw;

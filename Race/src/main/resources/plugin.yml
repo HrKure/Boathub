@@ -5,3 +5,10 @@ api-version: 1.18
 prefix: Race
 authors: [ Kevin996, Renokas1 ]
 description: Racing plugin for boathub
+commands:
+  editor:
+    description: cool command
+    permission: epic.boat.gang
+  edebug:
+    description: cool command
+    permission: epic.boat.gang

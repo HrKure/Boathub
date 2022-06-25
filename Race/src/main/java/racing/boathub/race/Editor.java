@@ -10,7 +10,7 @@ public class Editor extends Gamemode {
     WorldManager wManager;
     Vector selection1 = null;
     Vector selection2 = null;
-    List<BPlayer> builders;
+    List<BPlayer> builders = new ArrayList<>();
     Main plugin;
     SWorld editWorld;
     Vector respawn = null;
@@ -26,6 +26,7 @@ public class Editor extends Gamemode {
         super(Gamemodes.EDITOR, "Epic BoatGang");
         wManager = Main.getWmanager();
         plugin = Main.getInstance();
+        this.builders.add(plugin.players.get(p.getUniqueId()));
         if(isNew) {
             wManager.createWorld(p.getName() + saveSlot, p, this);
         }

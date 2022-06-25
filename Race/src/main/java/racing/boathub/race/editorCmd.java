@@ -21,18 +21,18 @@ public class editorCmd implements CommandExecutor {
         Player p = ((Player) sender).getPlayer();
         assert p != null;
         BPlayer player = plugin.players.get(p.getUniqueId());
-        if (Objects.equals(player.getState(), States.IDLE)) {
+        if (player.getState() == States.IDLE) {
             if (args[0].equalsIgnoreCase("create")) {
-                if (args.length == 3 && (!(plugin.editors.containsKey(player)))) {
+                if (args.length == 2 && (!(plugin.editors.containsKey(player)))) {
                     player.setState(States.EDIT);
-                    plugin.editors.put(player, new Editor(p, true, 1));
+                    plugin.editors.put(player, new Editor(p, true, Integer.parseInt(args[1])));
                     p.sendMessage("Created a new editing session");
                     return true;
                 }
             }
         }
-        else if (!Objects.equals(player.getState(), States.PLAYING)) {p.sendMessage("You can't enter the editor while playing!");}
-        if (Objects.equals(player.getState(), States.EDIT)) {
+        else if (player.getState() != States.PLAYING) {p.sendMessage("You can't enter the editor while playing!");}
+        if (player.getState() == States.EDIT) {
             //Load up a unpublished/published track for editing in the future
             if (args[0].equalsIgnoreCase("edit")) {
 
@@ -59,12 +59,22 @@ public class editorCmd implements CommandExecutor {
                 p.sendMessage("Succesfuly set the Pitstop to the current selection");
                 return true;
             }
+            else if (args[0].equalsIgnoreCase("setstart")) {
+                plugin.editors.get(player).setStart();
+                p.sendMessage("Succesfuly set the Start to the current selection");
+                return true;
+            }
             else if (args[0].equalsIgnoreCase("setspawn")) {
                 Location loc = p.getLocation();
                 Vector vec = new Vector(loc.getX(), loc.getY(), loc.getZ());
                 plugin.editors.get(player).addSpawn(vec);
                 plugin.editors.get(player).setYaw((int) loc.getYaw());
                 p.sendMessage("Succesfuly added a spawnpoint");
+                return true;
+            }
+            else if (args[0].equalsIgnoreCase("setlabel")) {
+                plugin.editors.get(player).setLabel(args[1]);
+                p.sendMessage("Succesfuly set the label to " + args[1]);
                 return true;
             }
             //
