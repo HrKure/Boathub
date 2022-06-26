@@ -173,4 +173,7 @@ public final class Main extends JavaPlugin {
     public Region selectionToRegion(Vector a, Vector b, RegionType rt) {
         return new Region(Vector.getMinimum(a, b), Vector.getMaximum(a, b), rt);
     }
+    public void backupPlayer(BPlayer player) {
+
+    }
 }
