@@ -3,10 +3,11 @@ package racing.boathub.race;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TimeTrial extends Gamemode{
-    List<Racer> players;
+    List<Racer> players = new ArrayList<>();
     Track track;
     SWorld world;
     Main plugin;
@@ -33,7 +34,7 @@ public class TimeTrial extends Gamemode{
             racer.setGamemode(Gamemodes.TIMETRIAL);
             racer.setTimeTrial(this);
             racer.p.teleport(track.respawn.toLocation(world.bWorld, track.yaw, 0));
-            racer.setBoat(racer.spawnBoat(track.respawn.toLocation(world.bWorld), world.bWorld));
+            racer.setBoat(racer.spawnBoat(track.respawn.toLocation(world.bWorld, track.yaw, 0), world.bWorld));
             racer.getBoat().addPassenger(racer.p);
             racer.p.setGameMode(GameMode.ADVENTURE);
             racer.setState(States.PLAYING);

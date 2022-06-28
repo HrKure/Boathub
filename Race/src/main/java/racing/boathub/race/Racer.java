@@ -79,8 +79,10 @@ public class Racer extends BPlayer{
         return track;
     }
     public Boolean isBetterTime(Track track, Long time) {
-        return bestTimes.get(track) > time;
-
+        if(bestTimes.containsKey(track)) {
+            return bestTimes.get(track) > time;
+        }
+        else {return true;}
     }
 
 

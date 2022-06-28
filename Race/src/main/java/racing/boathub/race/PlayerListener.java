@@ -56,6 +56,7 @@ public class PlayerListener implements Listener {
                             racer.resetProgress();
                             if(track.noEnd) {
                                 racer.start();
+                                racer.setStartTime(plugin.getCurrentMillis());
                             }
                         }
                     }

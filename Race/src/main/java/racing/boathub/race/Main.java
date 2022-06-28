@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.*;
 
 public final class Main extends JavaPlugin {
@@ -22,7 +23,7 @@ public final class Main extends JavaPlugin {
     public HashMap<String, Track> tracks = new HashMap<>();
     public HashMap<UUID, Racer> players = new HashMap<>();
     public HashMap<BPlayer, Editor> editors = new HashMap<>();
-    public Location spawn = new Location(Bukkit.getWorld("world"), 24, 97, -78);
+    public Location spawn = new Location(Bukkit.getWorld("spawn"), 24, 97, -78);
     public List<Racer> timer = new ArrayList<>();
     private static Main instance;
     @Override
@@ -185,7 +186,7 @@ public final class Main extends JavaPlugin {
 
     }
     public Long getCurrentMillis() {
-        return instance.getCurrentMillis();
+        return Instant.now().toEpochMilli();
     }
     public void saveLapTime(Racer racer, Track track, Long cTime) {}
     public void startTimer() {

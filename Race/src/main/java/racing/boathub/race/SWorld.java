@@ -12,7 +12,7 @@ import java.io.IOException;
 public class SWorld {
     SlimeWorld world;
     World bWorld;
-    Integer maxPlayers;
+    Integer maxPlayers = 20;
     public SWorld(SlimeWorld world) {
         this.world = world;
         bWorld = Bukkit.getWorld(world.getName());

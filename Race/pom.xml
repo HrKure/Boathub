@@ -50,6 +50,33 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-files-on-build</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>C:/Users/Kevin/Desktop/testserver/plugins</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/</directory>
+                                    <includes>
+                                        <include>race-1.0.jar</include>
+                                    </includes>
+                                    <!--<include>*.[MIME-TYPE]</include>-->
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <resources>
             <resource>

@@ -1,5 +1,6 @@
 package racing.boathub.race;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,8 +28,11 @@ public class debugCmd implements CommandExecutor {
             }
             else if(args[0].equals("timetrial")) {
                 UUID id = UUID.randomUUID();
-                plugin.timeTrials.put(id, new TimeTrial(plugin.tracks.get(args[1]), new ArrayList<>()));
-                System.out.println("Timetrial has been created with id: " + id);
+                plugin.tracks.get(args[1]).loadTrack();
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    plugin.timeTrials.put(id, new TimeTrial(plugin.tracks.get(args[1]), new ArrayList<>()));
+                    System.out.println("Timetrial has been created with id: " + id);
+                }, 100);
                 return true;
             }
             else if(args[0].equals("joinTT") && sender instanceof Player) {

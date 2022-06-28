@@ -40,7 +40,7 @@ public class Track extends Map{
 //         wManager.loadTemplate(worlds.get(0).world.getName(), Integer.parseInt(worlds.get(0).world.getName().replaceAll("[\\D]", "")) + 1);
 //     }
      else {
-         int pCount = 0;
+         int pCount = 100;
          SWorld emptiest = null;
          for (SWorld world : worlds) {
              if(!world.isFull() && world.getPCount() < pCount) {
@@ -56,7 +56,7 @@ public class Track extends Map{
      }
      return null;
     }
-    private void loadTrack() {
+    public void loadTrack() {
         if(worlds.isEmpty()) {
             wManager.loadTrack(this);
         }

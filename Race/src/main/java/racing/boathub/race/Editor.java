@@ -1,5 +1,7 @@
 package racing.boathub.race;
 
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -35,9 +37,14 @@ public class Editor extends Gamemode {
         }
     }
     public void publish() {
-        if(start != null && end != null && checkpoints.size() >= 1 && !spawns.isEmpty() && respawn != null) {
+        if(start != null && end != null && checkpoints.size() >= 1 && !spawns.isEmpty() && respawn != null && pitstop != null) {
             plugin.addNewTrack(id, label, start, end, pitstop, checkpoints, getCreators(), spawns, yaw, respawn);
             wManager.createCopy(editWorld.world.getName(), id, plugin.tracks.get(id));
+            for(BPlayer player : builders) {
+                player.p.teleport(plugin.spawn);
+                player.p.setGameMode(GameMode.ADVENTURE);
+            }
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {wManager.unloadWorld(editWorld.world.getName());}, 100);
 
         }
     }
