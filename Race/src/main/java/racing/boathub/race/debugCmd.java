@@ -3,7 +3,11 @@ package racing.boathub.race;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class debugCmd implements CommandExecutor {
     private static final Main plugin = Main.getInstance();
@@ -19,6 +23,19 @@ public class debugCmd implements CommandExecutor {
             else if(args[0].equals("unload")) {
                 wManager.unloadWorld(args[1]);
                 System.out.println("stuff unfunky");
+                return true;
+            }
+            else if(args[0].equals("timetrial")) {
+                UUID id = UUID.randomUUID();
+                plugin.timeTrials.put(id, new TimeTrial(plugin.tracks.get(args[1]), new ArrayList<>()));
+                System.out.println("Timetrial has been created with id: " + id);
+                return true;
+            }
+            else if(args[0].equals("joinTT") && sender instanceof Player) {
+                Player p = (Player) sender;
+                TimeTrial tt = plugin.timeTrials.get(UUID.fromString(args[1]));
+                tt.addPlayer(plugin.players.get(p.getUniqueId()));
+                System.out.println("Player joined the TimeTrial");
                 return true;
             }
             else {

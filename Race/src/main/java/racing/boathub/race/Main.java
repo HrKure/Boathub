@@ -1,7 +1,11 @@
 package racing.boathub.race;
 
 import co.aikar.idb.*;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
@@ -16,8 +20,10 @@ public final class Main extends JavaPlugin {
     public HashMap<UUID, TimeTrial> timeTrials = new HashMap<>();
     public HashMap<UUID, Race> races = new HashMap<>();
     public HashMap<String, Track> tracks = new HashMap<>();
-    public HashMap<UUID, BPlayer> players = new HashMap<>();
+    public HashMap<UUID, Racer> players = new HashMap<>();
     public HashMap<BPlayer, Editor> editors = new HashMap<>();
+    public Location spawn = new Location(Bukkit.getWorld("world"), 24, 97, -78);
+    public List<Racer> timer = new ArrayList<>();
     private static Main instance;
     @Override
     public void onEnable() {
@@ -73,6 +79,8 @@ public final class Main extends JavaPlugin {
         //Register Commands
         Objects.requireNonNull(getServer().getPluginCommand("editor")).setExecutor(new editorCmd());
         Objects.requireNonNull(getServer().getPluginCommand("edebug")).setExecutor(new debugCmd());
+        //start Timer
+        startTimer();
     }
     @Override
     public void onDisable() {
@@ -173,7 +181,50 @@ public final class Main extends JavaPlugin {
     public Region selectionToRegion(Vector a, Vector b, RegionType rt) {
         return new Region(Vector.getMinimum(a, b), Vector.getMaximum(a, b), rt);
     }
-    public void backupPlayer(BPlayer player) {
+    public void backupPlayer(Racer player) {
 
     }
+    public Long getCurrentMillis() {
+        return instance.getCurrentMillis();
+    }
+    public void saveLapTime(Racer racer, Track track, Long cTime) {}
+    public void startTimer() {
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            for(Racer racer : timer) {
+                if(racer.startTime != null) {
+                    if(racer.getGamemode() == Gamemodes.TIMETRIAL) {
+                        ChatColor color = ChatColor.GREEN;
+                        Long time = getCurrentMillis() - racer.startTime;
+                        if(!racer.isBetterTime(racer.track, time)) {color = ChatColor.RED;}
+                        racer.p.sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color + getNiceTime(time)));
+                    }
+                }
+            }
+
+
+
+
+        }, 2, 2);
+    }
+    public String getNiceTime(Long time) {
+        String min = String.valueOf((time / 1000) / 60);
+        String sec = String.valueOf((time / 1000) % 60);
+        String mil = String.valueOf(time - Integer.parseInt(min) * 60000L - Integer.parseInt(sec) * 1000L);
+        StringBuilder timer = new StringBuilder();
+        if (min.length() == 1) {
+            min = "0" + min;
+        }
+        if (sec.length() == 1) {
+            sec = "0" + sec;
+        }
+        if (mil.length() == 1) {
+            mil = "00" + mil;
+        }
+        else if (mil.length() == 2) {
+            mil = "0" + mil;
+        }
+        timer.append(min).append(":").append(sec).append(".").append(mil);
+        return String.valueOf(timer);
+    }
+
 }

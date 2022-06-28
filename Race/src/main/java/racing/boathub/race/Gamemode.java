@@ -7,4 +7,5 @@ public class Gamemode {
         this.type = type;
         this.label = label;
     }
+
 }

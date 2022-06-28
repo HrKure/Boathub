@@ -18,6 +18,7 @@ public class Track extends Map{
     Region end;
     Region pitstop;
     String creators;
+    Boolean noEnd = true;
     public Track(String id, String label, List<Region> cps, Region start, Region end, Region pitstop, String creators, int yaw, List<Vector> spawns, Vector respawn) {
         super(id, label);
         this.cps = cps;
