@@ -52,7 +52,7 @@ public class PlayerListener implements Listener {
                     }
                     else if(racer.getCPProgress() == track.cps.size()) {
                         if(track.end.isInside(p)) {
-                            plugin.saveLapTime(racer, track, plugin.getCurrentMillis());
+                            plugin.saveLapTime(racer, track, plugin.getCurrentMillis() - racer.getStartTime());
                             racer.resetProgress();
                             if(track.noEnd) {
                                 racer.start();

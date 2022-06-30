@@ -25,13 +25,14 @@ public final class Main extends JavaPlugin {
     public HashMap<BPlayer, Editor> editors = new HashMap<>();
     public Location spawn = new Location(Bukkit.getWorld("spawn"), 24, 97, -78);
     public List<Racer> timer = new ArrayList<>();
+    public Long ctime = null;
     private static Main instance;
     @Override
     public void onEnable() {
         //some epic stuff
         Main.instance = this;
         Main.wManager = new WorldManager();
-
+        
         //config stuff
         config.options().copyDefaults(true);
         saveConfig();
@@ -72,11 +73,34 @@ public final class Main extends JavaPlugin {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        try {
+            DB.executeUpdate("CREATE TABLE IF NOT EXISTS Times " +
+                    "(ID VARCHAR(100) NOT NULL UNIQUE," +
+                    " RACER VARCHAR(100) NOT NULL," +
+                    " TRACKID VARCHAR(100) NOT NULL," +
+                    " START VARCHAR(100) NOT NULL," +
+                    " END VARCHAR(100) NOT NULL," +
+                    " CHECKPOINTS VARCHAR(2000) NOT NULL);");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            DB.executeUpdate("CREATE TABLE IF NOT EXISTS Session " +
+                    "(ID VARCHAR(100) NOT NULL UNIQUE," +
+                    " RACER VARCHAR(100) NOT NULL," +
+                    " START VARCHAR(100) NOT NULL," +
+                    " END VARCHAR(100) NOT NULL," +
+                    " TIMES LONGTEXT NOT NULL," +
+                    " TRIES LONGTEXT NOT NULL);");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         //Load data from db :)
         loadTracks();
         //Register Events
         getServer().getPluginManager().registerEvents(new EditorListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new tickListener(), this);
         //Register Commands
         Objects.requireNonNull(getServer().getPluginCommand("editor")).setExecutor(new editorCmd());
         Objects.requireNonNull(getServer().getPluginCommand("edebug")).setExecutor(new debugCmd());
@@ -186,9 +210,11 @@ public final class Main extends JavaPlugin {
 
     }
     public Long getCurrentMillis() {
-        return Instant.now().toEpochMilli();
+        return this.ctime;
     }
-    public void saveLapTime(Racer racer, Track track, Long cTime) {}
+    public void saveLapTime(Racer racer, Track track, Long time) {
+        //Mysql insert something something yes
+    }
     public void startTimer() {
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             for(Racer racer : timer) {
@@ -226,6 +252,9 @@ public final class Main extends JavaPlugin {
         }
         timer.append(min).append(":").append(sec).append(".").append(mil);
         return String.valueOf(timer);
+    }
+    public void setTime(Long time) {
+        this.ctime = time;
     }
 
 }
