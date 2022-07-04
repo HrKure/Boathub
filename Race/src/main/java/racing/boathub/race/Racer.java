@@ -1,5 +1,6 @@
 package racing.boathub.race;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Boat;
@@ -12,6 +13,7 @@ import java.util.UUID;
 public class Racer extends BPlayer{
     Long startTime = null;
     Boat boat;
+    Main plugin = Main.getInstance();
     TimeTrial timeTrial;
     Track track = null;
     HashMap<Track, Long> bestTimes = new HashMap<>();
@@ -70,7 +72,6 @@ public class Racer extends BPlayer{
         startTime = null;
     }
     public void completedTTLap() {
-
     }
     public void setTrack(Track track) {
         this.track = track;
@@ -83,6 +84,16 @@ public class Racer extends BPlayer{
             return bestTimes.get(track) > time;
         }
         else {return true;}
+    }
+    public void resetRun() {
+        boat.remove();
+        setBoat(null);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            setBoat(spawnBoat(track.getRespawn().toLocation(timeTrial.getWorld().bWorld, track.getYaw(), 0), timeTrial.getWorld().bWorld));
+            p.teleport(track.getRespawn().toLocation(timeTrial.getWorld().bWorld, track.getYaw(), 0));
+            boat.addPassenger(p);
+            resetProgress();
+        }, 1);
     }
 
 

@@ -88,7 +88,7 @@ public class Editor extends Gamemode {
     public String getCreators() {
         StringBuilder creators = new StringBuilder();
         for(BPlayer p : builders) {
-            creators.append(p);
+            creators.append(p.UUID.toString());
             creators.append(", ");
         }
         creators.deleteCharAt(creators.length() - 1);

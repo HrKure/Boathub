@@ -43,7 +43,7 @@ public final class Trails extends JavaPlugin {
         Database db = new HikariPooledDatabase(options);
         DB.setGlobalDatabase(db);
         try {
-            DB.executeUpdate("CREATE TABLE IF NOT EXISTS PlayerTrails ( UUID VARCHAR(100) NOT NULL, NAME VARCHAR(100) NOT NULL);");
+            DB.executeUpdate("CREATE TABLE IF NOT EXISTS PlayerTrails ( UUID VARCHAR(100) PRIMARY KEY, NAME VARCHAR(100) NOT NULL);");
             DB.executeUpdate("CREATE TABLE IF NOT EXISTS Trails ( NAME VARCHAR(100) NOT NULL, TYPE VARCHAR(100) NOT NULL, COLOR VARCHAR(100) NOT NULL);");
             CompletableFuture<List<DbRow>> result = DB.getResultsAsync("SELECT * FROM Trails;");
             for (DbRow s : result.get()) {
@@ -74,14 +74,15 @@ public final class Trails extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // salvestan playerite valikud, Kuigi see sitt ei toimi
+        // salvestan playerite valikud, Kuigi see sitt toimib
         for(UUID id : selectedtrail.keySet()) {
 //            Trail trail = trails.get(s);
 //            String type = trail.getType();
 //            Boolean colored = trail.getColored();
 //            String colors = trail.getRed() + ":" + trail.getGreen() + ":" + trail.getBlue();
+            //INSERT INTO PlayerTrails VALUES ( + id.toString() + , '+ selectedtrail.get(id) + ') ON DUPLICATE KEY UPDATE NAME=' + selectedtrail.get(id) + "';
             try {
-                DB.executeUpdate("UPDATE PlayerTrails SET (NAME) VALUES (" + selectedtrail.get(id) + ") WHERE UUID='" + id.toString() + "';");
+                DB.executeUpdate("INSERT INTO PlayerTrails VALUES ('" + id.toString() + "', '" + selectedtrail.get(id) + "') ON DUPLICATE KEY UPDATE NAME='" + selectedtrail.get(id) + "';");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -103,10 +104,8 @@ public final class Trails extends JavaPlugin {
                 if(trail != null) {
                     if (trail.type.equalsIgnoreCase("REDSTONE")) {
                         new ParticleBuilder(trail.getParticle()).color(trail.getColor()).source(p).location(p.getLocation()).spawn();
-                        System.out.println("Redstone trail cool");
                     } else {
                         new ParticleBuilder(trail.getParticle()).source(p).location(p.getLocation()).spawn();
-                        System.out.println("Normal trail cool");
                     }
                 }
             }

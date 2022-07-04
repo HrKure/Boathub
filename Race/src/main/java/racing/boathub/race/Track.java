@@ -75,4 +75,7 @@ public class Track extends Map{
     public void addWorld(SWorld world) {
         this.worlds.add(world);
     }
+    public void removeWorld(SWorld world) {this.worlds.remove(world);}
+    public Vector getRespawn() {return respawn;}
+    public int getYaw() {return yaw;}
 }

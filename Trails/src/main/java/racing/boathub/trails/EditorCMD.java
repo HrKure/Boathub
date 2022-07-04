@@ -51,6 +51,12 @@ public class EditorCMD implements CommandExecutor {
                     p.sendMessage("Trail saved");
                 }
             }
+            if(args[0].equalsIgnoreCase("cancel")) {
+                if(args.length == 1 && plugin.editsessions.containsKey(p)) {
+                    plugin.editsessions.remove(p);
+                    p.sendMessage("Editor closed");
+                }
+            }
         }
         return false;
     }

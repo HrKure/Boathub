@@ -11,7 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.*;
 
 public final class Main extends JavaPlugin {
@@ -23,7 +22,7 @@ public final class Main extends JavaPlugin {
     public HashMap<String, Track> tracks = new HashMap<>();
     public HashMap<UUID, Racer> players = new HashMap<>();
     public HashMap<BPlayer, Editor> editors = new HashMap<>();
-    public Location spawn = new Location(Bukkit.getWorld("spawn"), 24, 97, -78);
+    public Location spawn;
     public List<Racer> timer = new ArrayList<>();
     public Long ctime = null;
     private static Main instance;
@@ -85,6 +84,17 @@ public final class Main extends JavaPlugin {
             e.printStackTrace();
         }
         try {
+            DB.executeUpdate("CREATE TABLE IF NOT EXISTS Tries " +
+                    "(ID VARCHAR(100) NOT NULL UNIQUE," +
+                    " RACER VARCHAR(100) NOT NULL," +
+                    " TRACKID VARCHAR(100) NOT NULL," +
+                    " START VARCHAR(100) NOT NULL," +
+                    " END VARCHAR(100) NOT NULL," +
+                    " CHECKPOINTS VARCHAR(2000) NOT NULL);");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
             DB.executeUpdate("CREATE TABLE IF NOT EXISTS Session " +
                     "(ID VARCHAR(100) NOT NULL UNIQUE," +
                     " RACER VARCHAR(100) NOT NULL," +
@@ -106,6 +116,7 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getServer().getPluginCommand("edebug")).setExecutor(new debugCmd());
         //start Timer
         startTimer();
+        spawn = new Location(Bukkit.getWorld("world"), 24, 97, -78);
     }
     @Override
     public void onDisable() {
@@ -256,5 +267,6 @@ public final class Main extends JavaPlugin {
     public void setTime(Long time) {
         this.ctime = time;
     }
+
 
 }

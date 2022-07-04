@@ -28,15 +28,19 @@ public class debugCmd implements CommandExecutor {
             }
             else if(args[0].equals("timetrial")) {
                 UUID id = UUID.randomUUID();
-                plugin.tracks.get(args[1]).loadTrack();
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    plugin.timeTrials.put(id, new TimeTrial(plugin.tracks.get(args[1]), new ArrayList<>()));
-                    System.out.println("Timetrial has been created with id: " + id);
-                }, 100);
+//                plugin.tracks.get(args[1]).loadTrack();
+//                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+//                    plugin.timeTrials.put(id, new TimeTrial(plugin.tracks.get(args[1]), new ArrayList<>()));
+//                    System.out.println("Timetrial has been created with id: " + id);
+//                }, 100);
+                if(plugin.tracks.containsKey(args[1])) {
+                    plugin.timeTrials.put(id, new TimeTrial(plugin.tracks.get(args[1]), new ArrayList<>(), id));
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> System.out.println("Timetrial has been created with id: " + id), 20);
+                }
+                else {sender.sendMessage("track with this name doesn't exist");}
                 return true;
             }
-            else if(args[0].equals("joinTT") && sender instanceof Player) {
-                Player p = (Player) sender;
+            else if(args[0].equals("joinTT") && sender instanceof Player p) {
                 TimeTrial tt = plugin.timeTrials.get(UUID.fromString(args[1]));
                 tt.addPlayer(plugin.players.get(p.getUniqueId()));
                 System.out.println("Player joined the TimeTrial");
