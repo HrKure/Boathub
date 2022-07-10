@@ -44,17 +44,23 @@ public class PlayerListener implements Listener {
                 Racer racer = plugin.players.get(p.getUniqueId());
 
                 Boat boat = (Boat) p.getVehicle();
-                if(Objects.requireNonNull(e.getPlayer().getInventory().getItem(EquipmentSlot.HAND)).getType() == Material.STICK) {
-                    boat.setVelocity(boat.getLocation().getDirection().normalize().multiply(2));
+                Location blockLoc = p.getLocation();
+                blockLoc.setY(blockLoc.getY() - 1);
+
+                if(p.getLocation().getWorld().getBlockAt(blockLoc).getType() == Material.LIGHT_BLUE_SHULKER_BOX) {
+                    Boat b = (Boat) p.getVehicle();
+                    plugin.goFly(b, 20);
                 }
+
                 //Timetrial
                 if (racer.getGamemode() == Gamemodes.TIMETRIAL) {
                     TimeTrial timeTrial = racer.getTimeTrial();
                     Track track = timeTrial.getTrack();
-                    if (racer.getStartTime() == null) {
+                    if (racer.getTrackTime() == null) {
                         if (track.start.isInside(p)) {
-                            racer.setStartTime(plugin.getCurrentMillis());
                             racer.start();
+
+
                         }
                     } else if (racer.getCPProgress() != track.cps.size()) {
                         if (track.cps.get(racer.checkpoints).isInside(p)) {
@@ -62,24 +68,23 @@ public class PlayerListener implements Listener {
                         }
                     } else if (racer.getCPProgress() == track.cps.size()) {
                         if (track.end.isInside(p)) {
-                            plugin.saveLapTime(racer, track, plugin.getCurrentMillis() - racer.getStartTime());
                             racer.resetProgress();
                             if (track.noEnd) {
                                 racer.start();
-                                racer.setStartTime(plugin.getCurrentMillis());
+                               //replace with new TrackTime
                             }
                         }
                     }
                 }
 
 
-                //race
+                //race redo timing to be handeled on the race side instead of racer obj
                 else if (racer.getGamemode() == Gamemodes.RACE) {
                     TimeTrial timeTrial = racer.getTimeTrial();
                     Track track = timeTrial.getTrack();
-                    if (racer.getStartTime() == null) {
+                    if (racer.getTrackTime().getStart() == null) {
                         if (track.start.isInside(p)) {
-                            racer.setStartTime(plugin.getCurrentMillis());
+                            //racer.getTrackTime().setStartTime(plugin.getCurrentMillis());
                             racer.start();
                         }
                     } else if (racer.getCPProgress() != track.cps.size()) {
@@ -171,5 +176,19 @@ public class PlayerListener implements Listener {
                 boat.setWorkOnLand(true);
             }
         }
+    }
+    @EventHandler
+    public void playerGoBounce(PlayerMoveEvent e) {
+        Location from = e.getFrom();
+        Location to = e.getTo();
+        if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()) {
+
+
+            //ignore players not in a boat
+            Player p = e.getPlayer();
+            if (p.isInsideVehicle() && p.getVehicle() instanceof Boat) {
+
+            }
+            }
     }
 }

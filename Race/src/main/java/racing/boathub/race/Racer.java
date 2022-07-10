@@ -11,12 +11,15 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class Racer extends BPlayer{
-    Long startTime = null;
     Boat boat;
     Main plugin = Main.getInstance();
     TimeTrial timeTrial;
     Track track = null;
     HashMap<Track, Long> bestTimes = new HashMap<>();
+    HashMap<Integer, CPTime> cpTimes = new HashMap<>();
+    Session session = null;
+    TrackTime trackTime = null;
+    Long lastCP = null;
     int lap = 0;
     int pitstops = 0;
     int checkpoints = 0;
@@ -27,14 +30,7 @@ public class Racer extends BPlayer{
 
         this.race = null;
     }
-    //Set the start time, mainly used for time trial
-    public void setStartTime(Long start) {
-        this.startTime = start;
-    }
     //get the last set start time in millis.
-    public Long getStartTime() {
-        return this.startTime;
-    }
     //sets the racers race to the race id pog
     public void setRace(UUID id) {
         this.race = id;
@@ -52,8 +48,18 @@ public class Racer extends BPlayer{
     public void setTimeTrial(TimeTrial timeTrial) {this.timeTrial = timeTrial;}
     public int getCPProgress() {return checkpoints;}
     public void passedCP() {
+
+        Long cpStart;
+        if(lastCP == null) {
+            cpStart = trackTime.getStartTime();
+        }
+        else {
+            cpStart = lastCP;
+        }
+        Long currentTime = plugin.getCurrentMillis();
+        cpTimes.put(checkpoints, new CPTime(cpStart, currentTime));
+        lastCP = currentTime;
         checkpoints += 1;
-        //get split time or smth
     }
     public void passedLap() {
         lap += 1;
@@ -64,12 +70,17 @@ public class Racer extends BPlayer{
     }
     public void start() {
         lap = 1;
+        if(getSession() == null) {
+            setSession(new Session(this));
+        }
+        if(trackTime == null) {
+            setTrackTime(new TrackTime(plugin.getCurrentMillis(), this, track));
+        }
     }
     public void resetProgress() {
         lap = 0;
         pitstops = 0;
         checkpoints = 0;
-        startTime = null;
     }
     public void completedTTLap() {
     }
@@ -95,9 +106,10 @@ public class Racer extends BPlayer{
             resetProgress();
         }, 1);
     }
-
-
-
+    public Session getSession() {return session;}
+    public TrackTime getTrackTime() {return trackTime;}
+    public void setSession(Session s) {session = s;}
+    public void setTrackTime(TrackTime tt) {trackTime = tt;}
 
 
 

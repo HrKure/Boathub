@@ -1,17 +1,21 @@
 package racing.boathub.race;
 
 import co.aikar.idb.*;
+import com.google.common.util.concurrent.AtomicDouble;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Boat;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class Main extends JavaPlugin {
     public static String table;
@@ -78,8 +82,19 @@ public final class Main extends JavaPlugin {
                     " RACER VARCHAR(100) NOT NULL," +
                     " TRACKID VARCHAR(100) NOT NULL," +
                     " START VARCHAR(100) NOT NULL," +
-                    " END VARCHAR(100) NOT NULL," +
-                    " CHECKPOINTS VARCHAR(2000) NOT NULL);");
+                    " TIME VARCHAR(100) NOT NULL," +
+                    " END VARCHAR(100) NOT NULL);");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            DB.executeUpdate("CREATE TABLE IF NOT EXISTS CPTimes " +
+                    "(TIMEID VARCHAR(100) NOT NULL," +
+                    " RACER VARCHAR(100) NOT NULL," +
+                    " NUMBER INT NOT NULL," +
+                    " START VARCHAR(100) NOT NULL," +
+                    " TIME VARCHAR(100) NOT NULL," +
+                    " END VARCHAR(100) NOT NULL);");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -89,8 +104,9 @@ public final class Main extends JavaPlugin {
                     " RACER VARCHAR(100) NOT NULL," +
                     " TRACKID VARCHAR(100) NOT NULL," +
                     " START VARCHAR(100) NOT NULL," +
+                    " TIME VARCHAR(100) NOT NULL," +
                     " END VARCHAR(100) NOT NULL," +
-                    " CHECKPOINTS VARCHAR(2000) NOT NULL);");
+                    " CHECKPOINTS LONGTEXT NOT NULL);");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -223,16 +239,13 @@ public final class Main extends JavaPlugin {
     public Long getCurrentMillis() {
         return this.ctime;
     }
-    public void saveLapTime(Racer racer, Track track, Long time) {
-        //Mysql insert something something yes
-    }
     public void startTimer() {
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             for(Racer racer : timer) {
-                if(racer.startTime != null) {
+                if(racer.getTrackTime() != null) {
                     if(racer.getGamemode() == Gamemodes.TIMETRIAL) {
                         ChatColor color = ChatColor.GREEN;
-                        Long time = getCurrentMillis() - racer.startTime;
+                        Long time = getCurrentMillis() - racer.getTrackTime().getStart();
                         if(!racer.isBetterTime(racer.track, time)) {color = ChatColor.RED;}
                         racer.p.sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color + getNiceTime(time)));
                     }
@@ -267,6 +280,19 @@ public final class Main extends JavaPlugin {
     public void setTime(Long time) {
         this.ctime = time;
     }
-
+    public void goFly(Boat boat, int time) {
+        AtomicInteger counter = new AtomicInteger();
+        Bukkit.getScheduler().runTaskTimer(this, task -> {
+            if(counter.addAndGet(1) > time) {
+                task.cancel();
+            }
+            else {
+                boat.setVelocity(boat.getVelocity().add(new Vector(0, 5, 0)));
+            }
+        }, 1, 1);
+    }
+    public void saveSession(Session s) {}
+    public void saveRun(TrackTime trackTime, List<CPTime> cpTimes) {}
+    public void saveCPTime(Long start, Long end, Racer r, UUID runID, int number) {}
 
 }

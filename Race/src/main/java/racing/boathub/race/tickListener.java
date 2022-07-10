@@ -8,6 +8,6 @@ public class tickListener implements Listener {
     Main plugin = Main.getInstance();
     @EventHandler
     public void onTick(ServerTickStartEvent e) {
-        plugin.ctime = System.currentTimeMillis();
+        plugin.setTime(System.currentTimeMillis());
     }
 }
